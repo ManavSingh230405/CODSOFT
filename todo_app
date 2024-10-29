@@ -1,0 +1,62 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+class TodoApp:
+    def __init__(self, master):
+        self.master = master
+        master.title("To-Do List")
+
+        self.tasks = []
+
+        self.task_listbox = tk.Listbox(master, selectmode=tk.SINGLE, width=50, height=15)
+        self.task_listbox.pack(pady=10)
+
+        self.entry = tk.Entry(master, width=50)
+        self.entry.pack(pady=10)
+
+        self.add_task_button = tk.Button(master, text="Add Task", command=self.add_task)
+        self.add_task_button.pack(pady=5)
+
+        self.update_task_button = tk.Button(master, text="Update Task", command=self.update_task)
+        self.update_task_button.pack(pady=5)
+
+        self.delete_task_button = tk.Button(master, text="Delete Task", command=self.delete_task)
+        self.delete_task_button.pack(pady=5)
+
+    def add_task(self):
+        task = self.entry.get()
+        if task:
+            self.tasks.append(task)
+            self.update_task_listbox()
+            self.entry.delete(0, tk.END)
+        else:
+            messagebox.showwarning("Warning", "You must enter a task.")
+
+    def update_task(self):
+        selected_index = self.task_listbox.curselection()
+        if selected_index:
+            task = simpledialog.askstring("Update Task", "Edit your task:", initialvalue=self.tasks[selected_index[0]])
+            if task:
+                self.tasks[selected_index[0]] = task
+                self.update_task_listbox()
+        else:
+            messagebox.showwarning("Warning", "You must select a task to update.")
+
+    def delete_task(self):
+        selected_index = self.task_listbox.curselection()
+        if selected_index:
+            self.tasks.pop(selected_index[0])
+            self.update_task_listbox()
+        else:
+            messagebox.showwarning("Warning", "You must select a task to delete.")
+
+    def update_task_listbox(self):
+        self.task_listbox.delete(0, tk.END)
+        for task in self.tasks:
+            self.task_listbox.insert(tk.END, task)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    todo_app = TodoApp(root)
+    root.mainloop()
+ 
